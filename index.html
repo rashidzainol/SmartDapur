@@ -6,7 +6,6 @@
     <title>SmartDapur</title>
     
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -35,7 +34,9 @@
         body {
             background-color: var(--bg-gray);
             color: var(--text);
-            padding-bottom: 80px; 
+            /* FIX 1: Jarak bawah mengambil kira Safe Area (Navigation Bar) + Tinggi Footer */
+            padding-bottom: calc(100px + env(safe-area-inset-bottom)); 
+            /* FIX 2: Jarak atas mengambil kira Status Bar */
             padding-top: env(safe-area-inset-top);
         }
 
@@ -44,6 +45,8 @@
             background-color: var(--primary);
             color: white;
             padding: 10px 15px;
+            /* FIX 3: Tambah padding atas untuk status bar jika transparent */
+            padding-top: calc(10px + env(safe-area-inset-top));
             position: sticky;
             top: 0;
             z-index: 100;
@@ -51,29 +54,13 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            height: 60px;
+            height: auto;
+            min-height: 60px;
         }
 
-        /* LOGO SVG STYLE */
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .logo-svg {
-            height: 32px;
-            width: auto;
-            fill: white; /* Warna logo putih */
-        }
-        
-        .logo-text {
-            font-size: 18px;
-            font-weight: 800;
-            color: white;
-            letter-spacing: -0.5px;
-        }
-
+        .logo-container { display: flex; align-items: center; gap: 8px; }
+        .logo-svg { height: 32px; width: auto; fill: white; }
+        .logo-text { font-size: 18px; font-weight: 800; color: white; letter-spacing: -0.5px; }
         .header-actions button { background: none; border: none; font-size: 18px; color: white; }
 
         /* --- SCREENS --- */
@@ -82,74 +69,43 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- HOME --- */
-        .welcome-banner {
-            background: white; border-radius: 10px; padding: 20px;
-            text-align: center; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .welcome-banner { background: white; border-radius: 10px; padding: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .welcome-banner h2 { color: var(--primary); margin-bottom: 5px; }
-        
         .section-header { font-size: 14px; font-weight: 600; color: var(--text-light); margin: 20px 0 10px 0; text-transform: uppercase; }
 
         .shopping-list-card {
-            background: white; border-radius: 12px; padding: 15px;
-            margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;
+            background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-left: 4px solid var(--text-light);
         }
-
         .shopping-list-info h3 { font-size: 16px; margin-bottom: 4px; }
         .shopping-list-info p { font-size: 12px; color: var(--text-light); }
-        
         .budget-status { font-weight: 700; font-size: 13px; margin-top: 5px; }
         .status-ok { color: var(--success); }
         .status-over { color: var(--danger); }
-
         .chevron { color: #ccc; }
 
         .fab {
-            position: fixed; bottom: 25px; right: 25px;
+            position: fixed; 
+            /* FIX 4: Naikkan butang FAB supaya tak kena navigation bar */
+            bottom: calc(25px + env(safe-area-inset-bottom)); 
+            right: 25px; 
             width: 56px; height: 56px; background-color: var(--primary); color: white;
-            border-radius: 50%; border: none; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            display: flex; align-items: center; justify-content: center; z-index: 90;
+            border-radius: 50%; border: none; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 90;
         }
 
         /* --- CART SCREEN --- */
-        .cart-header-strip {
-            background: white; padding: 10px 15px; display: flex; align-items: center; border-bottom: 1px solid #eee;
-        }
+        .cart-header-strip { background: white; padding: 10px 15px; display: flex; align-items: center; border-bottom: 1px solid #eee; }
         .back-btn { border: none; background: none; font-size: 16px; color: var(--text); margin-right: 10px; }
         .cart-title { font-weight: 600; font-size: 16px; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         
-        /* BARU: STATS ROW (3 BUBBLES) */
         .cart-stats-row {
-            display: flex;
-            gap: 10px;
-            padding: 10px 15px;
-            background: white;
-            overflow-x: auto;
-            white-space: nowrap;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 3px rgba(0,0,0,0.05);
-            /* Hide scrollbar */
+            display: flex; gap: 10px; padding: 10px 15px; background: white; overflow-x: auto; white-space: nowrap; margin-bottom: 10px; box-shadow: 0 2px 3px rgba(0,0,0,0.05);
             -ms-overflow-style: none; scrollbar-width: none;
         }
         .cart-stats-row::-webkit-scrollbar { display: none; }
-
-        .stat-bubble {
-            flex: 1;
-            padding: 8px 10px;
-            border-radius: 10px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-width: 90px;
-        }
-        
+        .stat-bubble { flex: 1; padding: 8px 10px; border-radius: 10px; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 90px; }
         .stat-label { font-size: 10px; opacity: 0.9; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-value { font-size: 14px; font-weight: 800; }
-
-        /* Bubble Colors */
         .bg-budget { background-color: var(--info); }
         .bg-spent { background-color: var(--primary); }
         .bg-safe { background-color: var(--success); }
@@ -160,7 +116,6 @@
         .input-group { flex: 1; position: relative; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; padding: 0 10px; }
         .input-group input { border: none; background: transparent; width: 100%; padding: 10px; font-size: 14px; }
         .input-group input:focus { outline: none; }
-
         .price-qty-row { display: flex; gap: 10px; }
         .mini-input { flex: 1; background: #f0f0f0; border: none; padding: 10px; border-radius: 8px; font-size: 14px; text-align: center; }
         .btn-add-cart { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: 600; width: 100%; margin-top: 5px; }
@@ -176,17 +131,35 @@
         .custom-check i { color: white; font-size: 12px; display: none; }
         .custom-check.checked i { display: block; }
 
-        .product-img { width: 50px; height: 50px; background: #e0f7fa; color: #006064; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px; }
+        .img-area { position: relative; margin-right: 12px; }
+        .product-img { width: 50px; height: 50px; background: #e0f7fa; color: #006064; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .history-btn-small {
+            position: absolute; bottom: -5px; right: -5px;
+            background: white; border: 1px solid #ddd; width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;
+        }
+
         .product-details { flex: 1; }
         .product-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; display: block; }
         .product-price { color: var(--primary); font-size: 13px; font-weight: 700; }
-        
         .qty-adjuster { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; margin-top: 5px; width: fit-content; }
         .qty-btn { background: white; border: none; width: 25px; height: 25px; font-weight: bold; color: #555; }
         .qty-display { padding: 0 8px; font-size: 12px; font-weight: 600; border-left: 1px solid #ddd; border-right: 1px solid #ddd; background: #fafafa; }
         .delete-btn-mini { position: absolute; top: 15px; right: 15px; color: #ccc; border: none; background: none; font-size: 14px; }
 
-        .cart-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 20px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; z-index: 99; padding-bottom: env(safe-area-inset-bottom); }
+        .cart-footer { 
+            position: fixed; 
+            bottom: 0; left: 0; width: 100%; 
+            background: white; 
+            padding: 12px 20px; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); 
+            display: flex; justify-content: space-between; align-items: center; 
+            z-index: 99; 
+            /* FIX 5: Padding bawah untuk elak navigation bar overlay */
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        }
+        
         .total-label { font-size: 12px; color: #777; display: block; }
         .total-amount { font-size: 18px; font-weight: 800; color: var(--primary); }
         .checkout-status { font-size: 12px; font-weight: 600; color: var(--success); text-align: right; }
@@ -197,8 +170,13 @@
         .btn-confirm { background: var(--danger); color: white; }
         .btn-cancel { background: white; border: 1px solid #ccc !important; }
 
+        /* MODALS */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
-        .modal-content { background: white; width: 100%; border-radius: 20px 20px 0 0; padding: 25px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; padding-bottom: 40px; }
+        .modal-content { 
+            background: white; width: 100%; border-radius: 20px 20px 0 0; padding: 25px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; 
+            /* FIX 6: Modal juga perlu padding bawah extra */
+            padding-bottom: calc(40px + env(safe-area-inset-bottom));
+        }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .close-btn { float: right; border: none; background: none; font-size: 20px; }
         .form-group { margin-bottom: 15px; }
@@ -207,6 +185,11 @@
         
         .suggestions-list { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ddd; border-top: none; z-index: 50; max-height: 150px; overflow-y: auto; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none; }
         .suggest-item { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+
+        /* HISTORY MODAL SPECIFIC */
+        .history-item { border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; font-size: 13px; }
+        .history-date { color: #777; font-size: 11px; }
+        .history-price { font-weight: 600; color: var(--primary); }
 
         .brand-credit { text-align: center; margin-top: 30px; font-size: 12px; color: #aaa; padding-bottom: 20px;}
         .brand-credit span { color: var(--primary); font-weight: 600; }
@@ -222,7 +205,6 @@
             </svg>
             <span class="logo-text">SmartDapur</span>
         </div>
-        
         <div class="header-actions">
             <button id="settingsBtn"><i class="fas fa-cog"></i></button>
         </div>
@@ -295,6 +277,15 @@
             <button class="btn-add-cart" id="saveListBtn">Cipta Senarai</button>
         </div>
     </div>
+    
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeHistoryModal">&times;</button>
+            <h3 id="histTitle">Sejarah Harga</h3>
+            <div id="historyListContainer" style="margin-top:15px;"></div>
+        </div>
+    </div>
+
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <button class="close-btn" id="closeSettingsModal">&times;</button>
@@ -307,7 +298,7 @@
             <div class="section-header">Lokasi / Supermarket</div>
             <div id="smListSetting"></div>
             <button class="mini-input" id="addSMBtn" style="width:100%; margin-top:10px;">+ Tambah Lokasi</button>
-            <div class="brand-credit">Version 2.5 • <span>RashidZainol</span></div>
+            <div class="brand-credit">Version 2.6 • <span>RashidZainol</span></div>
         </div>
     </div>
     <div class="modal" id="smModal">
@@ -367,7 +358,6 @@
                 div.className = 'shopping-list-card';
                 div.style.borderLeftColor = sm.color;
                 
-                // KIRA TOTAL BELANJA (BARANG YANG DAH DITANDA)
                 const total = list.items.filter(i => i.bought).reduce((acc, i) => acc + (i.price * i.quantity), 0);
                 const isOverBudget = total > list.budget;
                 const statusColor = isOverBudget ? 'status-over' : 'status-ok';
@@ -425,7 +415,10 @@
                     el.className = `cart-item ${item.bought ? 'bought' : ''}`;
                     el.innerHTML = `
                         <div class="check-container"><div class="custom-check ${item.bought ? 'checked' : ''}" onclick="toggleCheck(${originalIndex})"><i class="fas fa-check"></i></div></div>
-                        <div class="product-img"><i class="fas fa-${getItemIcon(item.name)}"></i></div>
+                        <div class="img-area">
+                            <div class="product-img"><i class="fas fa-${getItemIcon(item.name)}"></i></div>
+                            <div class="history-btn-small" onclick="event.stopPropagation(); showHist('${item.name}')"><i class="fas fa-history"></i></div>
+                        </div>
                         <div class="product-details">
                             <span class="product-name">${item.name}</span>
                             <span class="product-price">RM ${(item.price * item.quantity).toFixed(2)}</span>
@@ -436,25 +429,13 @@
                 container.appendChild(el);
             });
             
-            // --- UPDATE 3 BUBBLES ---
             const remaining = list.budget - totalSpent;
-
-            // 1. Set Nilai
             document.getElementById('valBudget').textContent = `RM ${list.budget.toFixed(2)}`;
             document.getElementById('valSpent').textContent = `RM ${totalSpent.toFixed(2)}`;
             document.getElementById('valBalance').textContent = `RM ${remaining.toFixed(2)}`;
-
-            // 2. Set Warna Bubble Baki
             const bubbleBalance = document.getElementById('bubbleBalance');
-            if (remaining < 0) {
-                // Negatif = Merah
-                bubbleBalance.className = 'stat-bubble bg-danger';
-            } else {
-                // Positif = Hijau
-                bubbleBalance.className = 'stat-bubble bg-safe';
-            }
+            if (remaining < 0) { bubbleBalance.className = 'stat-bubble bg-danger'; } else { bubbleBalance.className = 'stat-bubble bg-safe'; }
 
-            // UPDATE BOTTOM BAR
             document.getElementById('footerTotal').textContent = `RM ${totalSpent.toFixed(2)}`;
             document.getElementById('footerStatus').textContent = `${boughtCount}/${totalCount} Selesai`;
             document.getElementById('footerStatus').style.color = (boughtCount === totalCount && totalCount > 0) ? 'var(--success)' : '#777';
@@ -490,6 +471,38 @@
         window.askDel = (idx) => { const list = shoppingLists.find(l => l.id === currentListId); list.items[idx].isConfirmingDelete = true; renderCart(); }
         window.confirmDel = (idx) => { const list = shoppingLists.find(l => l.id === currentListId); list.items.splice(idx, 1); save(); renderCart(); }
         window.cancelDel = (idx) => { const list = shoppingLists.find(l => l.id === currentListId); list.items[idx].isConfirmingDelete = false; if(list.items[idx].quantity <= 0) list.items[idx].quantity = 1; renderCart(); }
+
+        // --- HISTORY FUNCTION ---
+        const histModal = document.getElementById('historyModal');
+        const closeHist = document.getElementById('closeHistoryModal');
+        closeHist.onclick = () => histModal.style.display = 'none';
+
+        window.showHist = (name) => {
+            const data = productDatabase[name];
+            const container = document.getElementById('historyListContainer');
+            container.innerHTML = '';
+            document.getElementById('histTitle').innerText = `Sejarah: ${name}`;
+
+            if(!data || !data.prices || data.prices.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#999;">Tiada rekod harga.</p>';
+            } else {
+                // Sort date descending
+                const sorted = [...data.prices].sort((a,b) => new Date(b.date) - new Date(a.date));
+                sorted.slice(0, 10).forEach(p => {
+                    const sm = supermarkets.find(s => s.id === p.location) || {name: 'Lain'};
+                    container.innerHTML += `
+                        <div class="history-item">
+                            <div>
+                                <span style="display:block;">${sm.name}</span>
+                                <span class="history-date">${new Date(p.date).toLocaleDateString('ms-MY')}</span>
+                            </div>
+                            <div class="history-price">RM ${p.price.toFixed(2)}</div>
+                        </div>
+                    `;
+                });
+            }
+            histModal.style.display = 'flex';
+        }
 
         const sInput = document.getElementById('itemName'); const sList = document.getElementById('suggestions');
         sInput.oninput = () => {
